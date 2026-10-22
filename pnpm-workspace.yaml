@@ -121,6 +121,8 @@ overrides:
   # rewrite the lockfile whenever a new release is published.
   '@paulirish/trace_engine>legacy-javascript': '0.0.3'
   '@paulirish/trace_engine>third-party-web': '0.30.0'
+  # Storybook 8 declares ^6, but the security fix requires webpack-dev-middleware 7.
+  '@storybook/builder-webpack5>webpack-dev-middleware': '7.4.6'
   # redux-saga@1.3.0's `^` ranges float up under pnpm; pin the transitives to
   # yarn's resolved versions. @redux-saga/types@1.4.1 tightened Saga so `run()`
   # requires a Generator, breaking callers typed against Iterator.
