@@ -32,6 +32,7 @@ import {
 } from '../../common/http_api/installation';
 import type { InternalServices } from '../types';
 import { INSTALL_TASK_WAIT_TIMEOUT_MS } from '../tasks/utils';
+import { validateIndexInferenceId } from '../validate_index_inference_id';
 
 // Stay open past the task waiter so a slow install can return its body. A socket that
 // expires together with the waiter drops the response and the caller only sees a timeout.
@@ -176,7 +177,10 @@ export const registerInstallationRoutes = ({
       path: INSTALL_ALL_API_PATH,
       validate: {
         body: schema.object({
-          inferenceId: schema.string({ defaultValue: defaultInferenceEndpoints.ELSER }),
+          inferenceId: schema.string({
+            defaultValue: defaultInferenceEndpoints.ELSER,
+            validate: validateIndexInferenceId,
+          }),
           resourceType: resourceTypeSchema,
         }),
       },
@@ -314,7 +318,10 @@ export const registerInstallationRoutes = ({
       path: UNINSTALL_ALL_API_PATH,
       validate: {
         body: schema.object({
-          inferenceId: schema.string({ defaultValue: defaultInferenceEndpoints.ELSER }),
+          inferenceId: schema.string({
+            defaultValue: defaultInferenceEndpoints.ELSER,
+            validate: validateIndexInferenceId,
+          }),
           resourceType: resourceTypeSchema,
         }),
       },

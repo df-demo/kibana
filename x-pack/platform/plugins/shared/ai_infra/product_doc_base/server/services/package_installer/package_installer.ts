@@ -55,6 +55,8 @@ import {
 import { overrideInferenceSettings } from './steps/create_index';
 import { LATEST_PRODUCT_VERSION } from '../../../common/consts';
 import type { InstallationStatus } from '../../../common/install_status';
+import { assertValidIndexInferenceId } from '../../validate_index_inference_id';
+
 interface PackageInstallerOpts {
   artifactsFolder: string;
   logger: Logger;
@@ -508,6 +510,7 @@ export class PackageInstaller {
     customInference?: InferenceInferenceEndpointInfo;
   }) {
     const inferenceId = customInference?.inference_id ?? this.elserInferenceId;
+    assertValidIndexInferenceId(inferenceId);
 
     this.log.info(
       `Starting installing documentation for product [${productName}] and version [${productVersion}] with inference ID [${inferenceId}]`
@@ -638,6 +641,7 @@ export class PackageInstaller {
     productName: ProductName;
     inferenceId?: string;
   }) {
+    assertValidIndexInferenceId(inferenceId);
     const indexName = getProductDocIndexName(productName, inferenceId);
     await this.esClient.indices.delete(
       {
@@ -651,6 +655,7 @@ export class PackageInstaller {
 
   async uninstallAll(params: { inferenceId?: string; resourceType?: ResourceType } = {}) {
     const { inferenceId, resourceType } = params;
+    assertValidIndexInferenceId(inferenceId);
     const allProducts = Object.values(DocumentationProduct);
     for (const productName of allProducts) {
       await this.productDocClient.setUninstallationStarted(productName, inferenceId);
@@ -674,6 +679,7 @@ export class PackageInstaller {
     inferenceId?: string;
   }): Promise<void> {
     const effectiveInferenceId = inferenceId || this.elserInferenceId;
+    assertValidIndexInferenceId(effectiveInferenceId);
 
     this.log.info(
       `Starting Security Labs installation${
@@ -800,6 +806,7 @@ export class PackageInstaller {
    * Uninstall Security Labs content.
    */
   async uninstallSecurityLabs({ inferenceId }: { inferenceId?: string }): Promise<void> {
+    assertValidIndexInferenceId(inferenceId);
     const indexName = getSecurityLabsIndexName(inferenceId);
     await this.esClient.indices.delete(
       {
