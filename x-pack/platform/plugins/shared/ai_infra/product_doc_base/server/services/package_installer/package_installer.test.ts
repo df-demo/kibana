@@ -107,6 +107,17 @@ describe('PackageInstaller', () => {
   });
 
   describe('installPackage', () => {
+    it('rejects an index expression supplied as the inference ID', async () => {
+      await expect(
+        packageInstaller.installPackage({
+          productName: 'kibana',
+          productVersion: '8.16',
+          customInference: { inference_id: 'x,*' } as never,
+        })
+      ).rejects.toThrow('Inference ID must contain only');
+      expect(esClient.indices.delete).not.toHaveBeenCalled();
+    });
+
     it('deletes the downloaded artifact after a successful install', async () => {
       openZipArchiveMock.mockResolvedValue({ close: jest.fn() });
       loadMappingFileMock.mockResolvedValue({ properties: {} });
@@ -918,6 +929,13 @@ describe('PackageInstaller', () => {
   });
 
   describe('uninstallPackage', () => {
+    it('rejects index expressions before deleting', async () => {
+      await expect(
+        packageInstaller.uninstallPackage({ productName: 'kibana', inferenceId: 'x,*' })
+      ).rejects.toThrow('Inference ID must contain only');
+      expect(esClient.indices.delete).not.toHaveBeenCalled();
+    });
+
     it('performs the uninstall steps', async () => {
       await packageInstaller.uninstallPackage({ productName: 'kibana' });
 
@@ -934,7 +952,40 @@ describe('PackageInstaller', () => {
     });
   });
 
+  describe('uninstallSecurityLabs', () => {
+    it.each([undefined, 'my-model', '.my-model'])(
+      'deletes only the Security Labs index for inference ID %s',
+      async (inferenceId) => {
+        await packageInstaller.uninstallSecurityLabs({ inferenceId });
+
+        expect(esClient.indices.delete).toHaveBeenCalledWith(
+          { index: getSecurityLabsIndexName(inferenceId) },
+          { ignore: [404] }
+        );
+      }
+    );
+
+    it.each(['x,*', 'x,other-index', 'x?', 'x*', 'x%2C*'])(
+      'rejects index expressions in inference ID %s before deleting',
+      async (inferenceId) => {
+        await expect(packageInstaller.uninstallSecurityLabs({ inferenceId })).rejects.toThrow(
+          'Inference ID must contain only'
+        );
+        expect(esClient.indices.delete).not.toHaveBeenCalled();
+        expect(productDocClient.setSecurityLabsUninstalled).not.toHaveBeenCalled();
+      }
+    );
+  });
+
   describe('uninstallAll', () => {
+    it('rejects index expressions before changing installation status', async () => {
+      await expect(packageInstaller.uninstallAll({ inferenceId: 'x,*' })).rejects.toThrow(
+        'Inference ID must contain only'
+      );
+      expect(esClient.indices.delete).not.toHaveBeenCalled();
+      expect(productDocClient.setUninstallationStarted).not.toHaveBeenCalled();
+    });
+
     it('calls uninstall for all packages', async () => {
       jest.spyOn(packageInstaller, 'uninstallPackage');
       const totalProducts = Object.keys(DocumentationProduct).length;
@@ -953,6 +1004,13 @@ describe('PackageInstaller', () => {
   describe('installSecurityLabs', () => {
     const VERSION_OLD = '2025.12.01';
     const VERSION_NEW = '2025.12.12';
+
+    it('rejects index expressions before attempting to install', async () => {
+      await expect(packageInstaller.installSecurityLabs({ inferenceId: 'x,*' })).rejects.toThrow(
+        'Inference ID must contain only'
+      );
+      expect(esClient.indices.delete).not.toHaveBeenCalled();
+    });
 
     it('downloads and installs the latest version when no version is provided', async () => {
       const zipArchive = { close: jest.fn() };
