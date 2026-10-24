@@ -1,0 +1,18 @@
+diff --git a/lib/decode-uri-component.js b/lib/decode-uri-component.js
+index 0739c20f5e60a69cdf978b89e9d794bd44ced096..67d68d707028184aa523b6f0581a3a63f6f0fe62 100644
+--- a/lib/decode-uri-component.js
++++ b/lib/decode-uri-component.js
+@@ -1,8 +1,10 @@
+-var decodeUriComponent = require("decode-uri-component")
++// decode-uri-component >=0.4 is ESM and exposes the decoder as a default export.
++// Node 24 supports requiring synchronous ESM modules from CommonJS.
++var decodeUriComponent = require("decode-uri-component").default
+ 
+ function customDecodeUriComponent(string) {
+-  // `decodeUriComponent` turns `+` into ` `, but that's not wanted.
+-  return decodeUriComponent(string.replace(/\+/g, "%2B"))
++  // Since 0.3, `decodeUriComponent` preserves `+` without preprocessing.
++  return decodeUriComponent(string)
+ }
+ 
+ module.exports = customDecodeUriComponent
