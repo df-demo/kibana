@@ -100,6 +100,7 @@ overrides:
   'remark-parse>trim': '1.0.1'
   'serialize-javascript': '7.1.2'
   'sharp': '0.35.5'
+  'source-map-resolve>decode-uri-component': '0.5.0'
   'socket.io-parser': '4.2.7'
   'typescript': '6.0.3'
   'util': '0.12.5'
@@ -1701,3 +1702,5 @@ packages:
 
 # Keep a last field entry, because a trailing comment might be removed by some parsers.
 lockfile: true
+patchedDependencies:
+  source-map-resolve@0.5.3: patches/source-map-resolve@0.5.3.patch
