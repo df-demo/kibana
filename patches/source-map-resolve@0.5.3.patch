@@ -1,0 +1,12 @@
+diff --git a/lib/decode-uri-component.js b/lib/decode-uri-component.js
+index 0739c20f5e60a69cdf978b89e9d794bd44ced096..6fe0d6bd363f9b1bb6adc3d9b31e3c72c7580241 100644
+--- a/lib/decode-uri-component.js
++++ b/lib/decode-uri-component.js
+@@ -1,4 +1,6 @@
+-var decodeUriComponent = require("decode-uri-component")
++// decode-uri-component >=0.4 is ESM-only; Node's require(esm) returns a namespace.
++var decodeUriComponentModule = require("decode-uri-component")
++var decodeUriComponent = decodeUriComponentModule.default || decodeUriComponentModule
+ 
+ function customDecodeUriComponent(string) {
+   // `decodeUriComponent` turns `+` into ` `, but that's not wanted.
