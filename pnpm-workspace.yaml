@@ -109,6 +109,8 @@ overrides:
   # pnpm-only pins: catalog: refs, drift pins, and scoped selectors with no
   # package.json#resolutions counterpart.
   '@babel/plugin-transform-typescript': '7.24.7'
+  # @azure/identity@4.13.3 declares ^6.0.0, but MSAL Node 7.1.0 fixes GHSA-xcx6-jx8p-x3h5.
+  '@azure/identity>@azure/msal-node': '7.1.0'
   '@bufbuild/protobuf': '2.5.2'
   '@elastic/elasticsearch@9>@elastic/transport': '9.4.0'
   '@elastic/esql-grammar': 'catalog:'
