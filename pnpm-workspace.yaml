@@ -88,6 +88,7 @@ overrides:
   'chokidar': '3.5.3'
   'dompurify': '3.4.14'
   'esbuild': '0.28.1'
+  'external-editor>tmp': '0.2.7'
   'fast-xml-parser': '5.5.7'
   'flatted': '3.4.2'
   'globby>fast-glob': '3.3.3'
