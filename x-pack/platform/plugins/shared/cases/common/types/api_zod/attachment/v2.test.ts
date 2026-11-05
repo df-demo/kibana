@@ -5,6 +5,7 @@
  * 2.0.
  */
 
+import { z } from '@kbn/zod/v4';
 import {
   MAX_ATTACHMENT_ID_LENGTH,
   MAX_ATTACHMENT_JSON_LENGTH,
@@ -143,11 +144,19 @@ describe('UnifiedAttachmentRouteRequestSchema', () => {
     });
 
     expect(result.success).toBe(false);
-    expect(result.error?.issues).toEqual(
-      expect.arrayContaining([
-        expect.objectContaining({ code: 'too_big', origin: 'array', path: ['data', 'list'] }),
-      ])
-    );
+    // An oversized array now aborts before its elements are parsed, so its too_big
+    // issue is nested within the route's union instead of appearing at the top level.
+    expect(z.treeifyError(result.error!)).toMatchObject({
+      properties: {
+        data: {
+          properties: {
+            list: {
+              errors: expect.arrayContaining([expect.stringContaining('Too big: expected array')]),
+            },
+          },
+        },
+      },
+    });
   });
 });
 
