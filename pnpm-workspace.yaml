@@ -91,6 +91,8 @@ overrides:
   'fast-xml-parser': '5.5.7'
   'flatted': '3.4.2'
   'globby>fast-glob': '3.3.3'
+  # get-uri@8 declares basic-ftp@^5; use the fixed major until get-uri updates its range.
+  'get-uri>basic-ftp': '6.2.1'
   'hoist-non-react-statics': '3.3.2'
   'isomorphic-fetch>node-fetch': '2.7.0'
   'lodash': '4.18.1'
