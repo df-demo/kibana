@@ -130,6 +130,7 @@
     "@types/react-dom": "18.2.25",
     "apache-arrow": "20.x - 21.x",
     "globby/fast-glob": "3.3.3",
+    "query-string/decode-uri-component": "0.5.1",
     "redux-thunk-v2/redux": "npm:redux@4.2.1"
   },
   "dependencies": {
