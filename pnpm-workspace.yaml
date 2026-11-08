@@ -108,6 +108,8 @@ overrides:
   # END GENERATED OVERRIDES
   # pnpm-only pins: catalog: refs, drift pins, and scoped selectors with no
   # package.json#resolutions counterpart.
+  # Storybook 8 pins webpack-dev-middleware 6; use the fixed 7.x release.
+  '@storybook/builder-webpack5>webpack-dev-middleware': '7.4.6'
   '@babel/plugin-transform-typescript': '7.24.7'
   '@bufbuild/protobuf': '2.5.2'
   '@elastic/elasticsearch@9>@elastic/transport': '9.4.0'
