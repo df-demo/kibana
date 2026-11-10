@@ -7,6 +7,9 @@
 
 import React from 'react';
 import type { Map as MbMap, LayerSpecification, StyleSpecification } from '@kbn/mapbox-gl';
+import type { AllPaintProperties } from 'maplibre-gl';
+
+type OpacityProperty = Extract<keyof AllPaintProperties, `${string}-opacity`>;
 import { type blendMode, type EmsSpriteSheet, TMSService } from '@elastic/ems-client';
 import { i18n } from '@kbn/i18n';
 import _ from 'lodash';
@@ -379,7 +382,7 @@ export class EmsVectorTileLayer extends AbstractLayer {
     this._setTileLayerProperties(mbMap);
   }
 
-  _getOpacityProps(layerType: string): string[] {
+  _getOpacityProps(layerType: string): OpacityProperty[] {
     if (layerType === 'fill') {
       return ['fill-opacity'];
     }

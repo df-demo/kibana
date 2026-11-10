@@ -34,6 +34,12 @@ export interface Props {
   enable: boolean;
 }
 
+// MapboxDraw fires this custom event, which is not part of MapLibre's built-in event map.
+type MapWithDrawEvents = MbMap & {
+  on(type: 'draw.create', listener: (event: { features: Feature[] }) => void): void;
+  off(type: 'draw.create', listener: (event: { features: Feature[] }) => void): void;
+};
+
 export class DrawControl extends Component<Props> {
   private _isMounted = false;
   private _isMapRemoved = false;
@@ -95,7 +101,7 @@ export class DrawControl extends Component<Props> {
     }
 
     this.props.mbMap.getCanvas().style.cursor = '';
-    this.props.mbMap.off('draw.create', this._onDraw);
+    (this.props.mbMap as MapWithDrawEvents).off('draw.create', this._onDraw);
     if (this.props.onClick) {
       this.props.mbMap.off('click', this._onClick);
     }
@@ -107,7 +113,7 @@ export class DrawControl extends Component<Props> {
     if (!this._mbDrawControlAdded) {
       this.props.mbMap.addControl(this._mbDrawControl);
       this._mbDrawControlAdded = true;
-      this.props.mbMap.on('draw.create', this._onDraw);
+      (this.props.mbMap as MapWithDrawEvents).on('draw.create', this._onDraw);
 
       if (this.props.onClick) {
         this.props.mbMap.on('click', this._onClick);

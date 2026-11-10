@@ -10,6 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 import type { Adapters } from '@kbn/inspector-plugin/common/adapters';
 import { asyncForEach } from '@kbn/std';
 import type { FilterSpecification, Map as MbMap, LayerSpecification } from '@kbn/mapbox-gl';
+import type { DataDrivenPropertyValueSpecification } from 'maplibre-gl';
 import type { KibanaExecutionContext } from '@kbn/core/public';
 import type { Query } from '@kbn/data-plugin/common';
 import type { Feature, FeatureCollection, GeoJsonProperties, Geometry, Position } from 'geojson';
@@ -872,9 +873,10 @@ export class AbstractVectorLayer extends AbstractLayer implements IVectorLayer {
       maskCaseExpressions.push(0);
     });
 
-    return maskCaseExpressions.length
+    // Mask branches alternate between boolean expressions and numeric opacity values.
+    return (maskCaseExpressions.length
       ? ['case', ...maskCaseExpressions, this.getAlpha()]
-      : this.getAlpha();
+      : this.getAlpha()) as DataDrivenPropertyValueSpecification<number>;
   }
 
   _setMbPointsProperties(

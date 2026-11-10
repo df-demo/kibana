@@ -8,6 +8,7 @@
 import React from 'react';
 import { EuiTextColor } from '@elastic/eui';
 import type { Map as MbMap } from '@kbn/mapbox-gl';
+import type { AllLayoutProperties, DataDrivenPropertyValueSpecification } from 'maplibre-gl';
 import { DynamicStyleProperty } from './dynamic_style_property';
 import type { IVectorStyle } from '../vector_style';
 import { getIconPalette, getMakiSymbolAnchor } from '../symbol_utils';
@@ -32,11 +33,22 @@ export class DynamicIconProperty extends DynamicStyleProperty<IconDynamicOptions
 
   syncIconWithMb(symbolLayerId: string, mbMap: MbMap) {
     if (this._isIconDynamicConfigComplete()) {
-      mbMap.setLayoutProperty(symbolLayerId, 'icon-image', this._getMbIconImageExpression());
-      mbMap.setLayoutProperty(symbolLayerId, 'icon-anchor', this._getMbIconAnchorExpression());
+      // The match expressions are assembled from the icon palette at runtime.
+      mbMap.setLayoutProperty(
+        symbolLayerId,
+        'icon-image',
+        (this._getMbIconImageExpression() ?? undefined) as
+          | DataDrivenPropertyValueSpecification<string>
+          | undefined
+      );
+      mbMap.setLayoutProperty(
+        symbolLayerId,
+        'icon-anchor',
+        (this._getMbIconAnchorExpression() ?? undefined) as AllLayoutProperties['icon-anchor']
+      );
     } else {
-      mbMap.setLayoutProperty(symbolLayerId, 'icon-image', null);
-      mbMap.setLayoutProperty(symbolLayerId, 'icon-anchor', null);
+      mbMap.setLayoutProperty(symbolLayerId, 'icon-image', undefined);
+      mbMap.setLayoutProperty(symbolLayerId, 'icon-anchor', undefined);
     }
   }
 

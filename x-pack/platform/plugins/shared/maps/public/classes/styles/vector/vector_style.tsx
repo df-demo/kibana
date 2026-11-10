@@ -8,6 +8,7 @@
 import type { CSSProperties, ReactElement } from 'react';
 import React from 'react';
 import type { FeatureIdentifier, Map as MbMap } from '@kbn/mapbox-gl';
+import type { DataDrivenPropertyValueSpecification } from 'maplibre-gl';
 import type { FeatureCollection } from 'geojson';
 import type { Writable } from '@kbn/utility-types';
 import type { StyleProperties } from './components/vector_style_editor';
@@ -136,7 +137,7 @@ export interface IVectorStyle extends IStyle {
     fillLayerId,
     lineLayerId,
   }: {
-    alpha: unknown;
+    alpha: DataDrivenPropertyValueSpecification<number>;
     mbMap: MbMap;
     fillLayerId: string;
     lineLayerId: string;
@@ -146,7 +147,7 @@ export interface IVectorStyle extends IStyle {
     mbMap,
     pointLayerId,
   }: {
-    alpha: unknown;
+    alpha: DataDrivenPropertyValueSpecification<number>;
     mbMap: MbMap;
     pointLayerId: string;
   }) => void;
@@ -155,7 +156,7 @@ export interface IVectorStyle extends IStyle {
     mbMap,
     textLayerId,
   }: {
-    alpha: unknown;
+    alpha: DataDrivenPropertyValueSpecification<number>;
     mbMap: MbMap;
     textLayerId: string;
   }) => void;
@@ -164,7 +165,7 @@ export interface IVectorStyle extends IStyle {
     symbolLayerId,
     alpha,
   }: {
-    alpha: unknown;
+    alpha: DataDrivenPropertyValueSpecification<number>;
     mbMap: MbMap;
     symbolLayerId: string;
   }) => void;
@@ -815,7 +816,7 @@ export class VectorStyle implements IVectorStyle {
     fillLayerId,
     lineLayerId,
   }: {
-    alpha: unknown;
+    alpha: DataDrivenPropertyValueSpecification<number>;
     mbMap: MbMap;
     fillLayerId: string;
     lineLayerId: string;
@@ -830,7 +831,7 @@ export class VectorStyle implements IVectorStyle {
     mbMap,
     pointLayerId,
   }: {
-    alpha: unknown;
+    alpha: DataDrivenPropertyValueSpecification<number>;
     mbMap: MbMap;
     pointLayerId: string;
   }) {
@@ -847,7 +848,7 @@ export class VectorStyle implements IVectorStyle {
     mbMap,
     textLayerId,
   }: {
-    alpha: unknown;
+    alpha: DataDrivenPropertyValueSpecification<number>;
     mbMap: MbMap;
     textLayerId: string;
   }) {
@@ -865,7 +866,7 @@ export class VectorStyle implements IVectorStyle {
     symbolLayerId,
     alpha,
   }: {
-    alpha: unknown;
+    alpha: DataDrivenPropertyValueSpecification<number>;
     mbMap: MbMap;
     symbolLayerId: string;
   }) {

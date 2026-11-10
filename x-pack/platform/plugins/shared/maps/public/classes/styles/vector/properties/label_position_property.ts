@@ -127,7 +127,7 @@ export class LabelPositionProperty extends AbstractStyleProperty<
   }
 
   // https://maplibre.org/maplibre-gl-js-docs/style-spec/layers/#layout-symbol-text-offset
-  _getTextOffset(symbolSize: number, labelSize: number) {
+  _getTextOffset(symbolSize: number, labelSize: number): [number, number] {
     const ems = symbolSize / labelSize;
     // Positive values indicate right and down, while negative values indicate left and up
     const verticalTextOffset = this._options.position === LABEL_POSITIONS.BOTTOM ? ems : ems * -1;

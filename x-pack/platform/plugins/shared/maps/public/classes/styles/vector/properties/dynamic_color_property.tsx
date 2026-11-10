@@ -6,6 +6,7 @@
  */
 
 import type { Map as MbMap } from '@kbn/mapbox-gl';
+import type { DataDrivenPropertyValueSpecification } from 'maplibre-gl';
 import React from 'react';
 import { EuiTextColor } from '@elastic/eui';
 import { i18n } from '@kbn/i18n';
@@ -52,7 +53,7 @@ export class DynamicColorProperty extends DynamicStyleProperty<ColorDynamicOptio
     this._chartsPaletteServiceGetColor = chartsPaletteServiceGetColor;
   }
 
-  syncCircleColorWithMb(mbLayerId: string, mbMap: MbMap, alpha: unknown) {
+  syncCircleColorWithMb(mbLayerId: string, mbMap: MbMap, alpha: DataDrivenPropertyValueSpecification<number>) {
     const color = this._getMbColor();
     mbMap.setPaintProperty(mbLayerId, 'circle-color', color);
     mbMap.setPaintProperty(mbLayerId, 'circle-opacity', alpha);
@@ -68,25 +69,25 @@ export class DynamicColorProperty extends DynamicStyleProperty<ColorDynamicOptio
     mbMap.setPaintProperty(mbLayerId, 'icon-halo-color', color);
   }
 
-  syncCircleStrokeWithMb(pointLayerId: string, mbMap: MbMap, alpha: unknown) {
+  syncCircleStrokeWithMb(pointLayerId: string, mbMap: MbMap, alpha: DataDrivenPropertyValueSpecification<number>) {
     const color = this._getMbColor();
     mbMap.setPaintProperty(pointLayerId, 'circle-stroke-color', color);
     mbMap.setPaintProperty(pointLayerId, 'circle-stroke-opacity', alpha);
   }
 
-  syncFillColorWithMb(mbLayerId: string, mbMap: MbMap, alpha: unknown) {
+  syncFillColorWithMb(mbLayerId: string, mbMap: MbMap, alpha: DataDrivenPropertyValueSpecification<number>) {
     const color = this._getMbColor();
     mbMap.setPaintProperty(mbLayerId, 'fill-color', color);
     mbMap.setPaintProperty(mbLayerId, 'fill-opacity', alpha);
   }
 
-  syncLineColorWithMb(mbLayerId: string, mbMap: MbMap, alpha: unknown) {
+  syncLineColorWithMb(mbLayerId: string, mbMap: MbMap, alpha: DataDrivenPropertyValueSpecification<number>) {
     const color = this._getMbColor();
     mbMap.setPaintProperty(mbLayerId, 'line-color', color);
     mbMap.setPaintProperty(mbLayerId, 'line-opacity', alpha);
   }
 
-  syncLabelColorWithMb(mbLayerId: string, mbMap: MbMap, alpha: unknown) {
+  syncLabelColorWithMb(mbLayerId: string, mbMap: MbMap, alpha: DataDrivenPropertyValueSpecification<number>) {
     const color = this._getMbColor();
     mbMap.setPaintProperty(mbLayerId, 'text-color', color);
     mbMap.setPaintProperty(mbLayerId, 'text-opacity', alpha);
@@ -131,14 +132,16 @@ export class DynamicColorProperty extends DynamicStyleProperty<ColorDynamicOptio
     return [DATA_MAPPING_FUNCTION.INTERPOLATE, DATA_MAPPING_FUNCTION.PERCENTILES];
   }
 
-  _getMbColor() {
+  _getMbColor(): DataDrivenPropertyValueSpecification<string> | undefined {
     if (!this.getMbFieldName()) {
-      return null;
+      return undefined;
     }
 
-    return this.isCategorical()
+    // These builders assemble valid step/match/interpolate expressions from runtime stops.
+    const expression = this.isCategorical()
       ? this._getCategoricalColorMbExpression()
       : this._getOrdinalColorMbExpression();
+    return (expression ?? undefined) as DataDrivenPropertyValueSpecification<string> | undefined;
   }
 
   _getOrdinalColorMbExpression() {

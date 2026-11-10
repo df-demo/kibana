@@ -7,6 +7,7 @@
 
 import React from 'react';
 import type { Map as MbMap } from '@kbn/mapbox-gl';
+import type { DataDrivenPropertyValueSpecification } from 'maplibre-gl';
 import { DynamicStyleProperty } from '../dynamic_style_property';
 import { MarkerSizeLegend, OrdinalLegend } from '../../components/legend/size';
 import { makeMbClampedNumberExpression } from '../../style_util';
@@ -76,18 +77,24 @@ export class DynamicSizeProperty extends DynamicStyleProperty<SizeDynamicOptions
   /*
    * Returns interpolation expression linearly translating domain values [minValue, maxValue] to display range [minSize, maxSize]
    */
+  getMbSizeExpression(): DataDrivenPropertyValueSpecification<number> | undefined;
+  getMbSizeExpression(options: {
+    forceFeatureProperties: true;
+    maxStopOutput: ['literal', [number, number]];
+    minStopOutput: ['literal', [number, number]];
+  }): DataDrivenPropertyValueSpecification<[number, number]> | undefined;
   getMbSizeExpression(options?: {
     forceFeatureProperties?: boolean;
-    maxStopOutput?: unknown;
-    minStopOutput?: unknown;
-  }) {
+    maxStopOutput?: number | ['literal', [number, number]];
+    minStopOutput?: number | ['literal', [number, number]];
+  }): DataDrivenPropertyValueSpecification<number | [number, number]> | undefined {
     const rangeFieldMeta = this.getRangeFieldMeta();
     if (!this.isSizeDynamicConfigComplete() || !rangeFieldMeta) {
       // return min of size to avoid flashing
       // returning minimum allows "growing" of the symbols when the meta comes in
       // A grow effect us less visually jarring as shrinking.
       // especially relevant when displaying fine-grained grids using mvt
-      return this._options.minSize >= 0 ? this._options.minSize : null;
+      return this._options.minSize >= 0 ? this._options.minSize : undefined;
     }
 
     const isArea = this.getStyleName() === VECTOR_STYLES.ICON_SIZE;
@@ -132,7 +139,10 @@ export class DynamicSizeProperty extends DynamicStyleProperty<SizeDynamicOptions
     const sqrtValueExpression = ['sqrt', valueShiftExpression];
     const inputExpression = isArea ? sqrtValueExpression : valueExpression;
 
-    return ['interpolate', ['linear'], inputExpression, ...stops];
+    // Stops are numeric sizes, or literal two-dimensional offsets for label positioning.
+    return ['interpolate', ['linear'], inputExpression, ...stops] as DataDrivenPropertyValueSpecification<
+      number | [number, number]
+    >;
   }
 
   getMaxStopOutput() {

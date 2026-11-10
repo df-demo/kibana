@@ -196,10 +196,9 @@ export class MbMap extends Component<Props> {
       mbMap.touchZoomRotate.disableRotation();
 
       let emptyImage: HTMLImageElement;
-      mbMap.on('styleimagemissing', (e: unknown) => {
+      mbMap.setMissingStyleImageResolver((id) => {
         if (emptyImage) {
-          // @ts-expect-error
-          mbMap.addImage(e.id, emptyImage);
+          mbMap.addImage(id, emptyImage);
         }
       });
       mbMap.on('load', () => {
