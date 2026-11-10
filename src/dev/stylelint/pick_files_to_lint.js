@@ -7,18 +7,13 @@
  * License v3.0 only", or the "Server Side Public License, v 1".
  */
 
-import { makeRe } from 'minimatch';
+import { Minimatch } from 'minimatch';
 
 const includeGlobs = ['**/*.s+(a|c)ss'];
-const includeRegex = includeGlobs.map((glob) => makeRe(glob));
+const includeMatchers = includeGlobs.map((glob) => new Minimatch(glob));
 
 function matchesInclude(file) {
-  for (let i = 0; i < includeRegex.length; i++) {
-    if (includeRegex[i].test(file.relativePath)) {
-      return true;
-    }
-  }
-  return false;
+  return includeMatchers.some((matcher) => matcher.match(file.relativePath));
 }
 
 export function pickFilesToLint(log, files) {
