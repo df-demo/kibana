@@ -7,8 +7,7 @@
 
 import { parse } from 'yaml';
 import pMap from 'p-map';
-import type { MMRegExp } from 'minimatch';
-import { minimatch } from 'minimatch';
+import { Minimatch } from 'minimatch';
 import type {
   ElasticsearchClient,
   SavedObject,
@@ -486,13 +485,13 @@ function getInstalledPackageSavedObjectDataStreams(
       }
 
       if (filterActiveDatastreamsName) {
-        const patternRegex = new minimatch.Minimatch(stream.name, {
+        const patternMatcher = new Minimatch(stream.name, {
           noglobstar: true,
           nonegate: true,
-        }).makeRe() as MMRegExp;
+        });
 
         return filterActiveDatastreamsName.some((dataStreamName) =>
-          dataStreamName.match(patternRegex)
+          patternMatcher.match(dataStreamName)
         );
       }
 
