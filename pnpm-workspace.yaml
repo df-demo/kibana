@@ -153,6 +153,8 @@ overrides:
   'focus-lock': '0.11.6'
   'gaxios>node-fetch': '2.7.0'
   'glob-stream': '8.0.0'
+  # Fix GHSA-rxp7-6hxx-x8q5 in the transitive ip-address dependency.
+  'ip-address': '10.7.4'
   'module-replacements': '2.3.2'
   'node-jose>uuid': '11.1.1'
   'nwsapi': '2.2.2'
