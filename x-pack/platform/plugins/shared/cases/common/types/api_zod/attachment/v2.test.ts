@@ -143,9 +143,29 @@ describe('UnifiedAttachmentRouteRequestSchema', () => {
     });
 
     expect(result.success).toBe(false);
+    // Oversized arrays abort element parsing before their parent unions finish validating.
     expect(result.error?.issues).toEqual(
       expect.arrayContaining([
-        expect.objectContaining({ code: 'too_big', origin: 'array', path: ['data', 'list'] }),
+        expect.objectContaining({
+          code: 'invalid_union',
+          errors: expect.arrayContaining([
+            expect.arrayContaining([
+              expect.objectContaining({
+                code: 'invalid_union',
+                path: ['data', 'list'],
+                errors: expect.arrayContaining([
+                  expect.arrayContaining([
+                    expect.objectContaining({
+                      code: 'too_big',
+                      origin: 'array',
+                      maximum: MAX_ATTACHMENT_JSON_LENGTH,
+                    }),
+                  ]),
+                ]),
+              }),
+            ]),
+          ]),
+        }),
       ])
     );
   });
