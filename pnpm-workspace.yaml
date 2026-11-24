@@ -70,6 +70,7 @@ overrides:
   '@babel/traverse': '7.29.8'
   '@babel/types': '7.29.8'
   '@emotion/sheet': 'npm:@elastic/emotion-sheet@1.4.1'
+  '@hapi/content': '6.0.3'
   '@hapi/mimos>mime-db': '1.53.0'
   '@hello-pangea/dnd': '18.0.1'
   '@langchain/core': '1.2.3'
