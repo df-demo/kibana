@@ -90,6 +90,7 @@ overrides:
   'esbuild': '0.28.1'
   'fast-xml-parser': '5.5.7'
   'flatted': '3.4.2'
+  'follow-redirects': '1.16.2'
   'globby>fast-glob': '3.3.3'
   'hoist-non-react-statics': '3.3.2'
   'isomorphic-fetch>node-fetch': '2.7.0'
