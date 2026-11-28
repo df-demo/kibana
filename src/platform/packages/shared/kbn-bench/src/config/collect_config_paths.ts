@@ -8,7 +8,7 @@
  */
 import Path from 'path';
 import execa from 'execa';
-import { minimatch } from 'minimatch';
+import { Minimatch } from 'minimatch';
 
 export async function collectConfigPaths({
   patterns,
@@ -44,13 +44,13 @@ export async function collectConfigPaths({
     .filter((f) => f.endsWith(filename) || f.endsWith(filenameSuffix))
     .map((file) => Path.resolve(cwd, file));
 
-  const matchers = patterns.filter(Boolean).map((pattern) => {
-    return minimatch.makeRe(Path.isAbsolute(pattern) ? pattern : Path.join(cwd, pattern));
-  });
+  const matchers = patterns
+    .filter(Boolean)
+    .map((pattern) => new Minimatch(Path.isAbsolute(pattern) ? pattern : Path.join(cwd, pattern)));
 
   const matchingFiles = matchers.length
     ? files.filter((file) => {
-        return matchers.some((matcher) => matcher && matcher.test(file));
+        return matchers.some((matcher) => matcher.match(file));
       })
     : files;
 
