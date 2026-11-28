@@ -1047,6 +1047,19 @@ owner: elastic`,
           title: 'apm_server_metrics',
         },
       ]);
+
+      // No active stream should match the installed package's glob patterns.
+      jest
+        .mocked(dataStreamService.getAllFleetDataStreams)
+        .mockResolvedValue([{ name: 'logs-other_integration-default' }] as any);
+      const withoutMatches = await getInstalledPackages({
+        savedObjectsClient: soClient,
+        esClient: elasticsearchServiceMock.createInternalClient(),
+        perPage: 10,
+        sortOrder: 'asc',
+        showOnlyActiveDataStreams: true,
+      });
+      expect(withoutMatches.items[0].dataStreams).toEqual([]);
     });
   });
 
